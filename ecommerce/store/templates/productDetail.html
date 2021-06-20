@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}
+{{product.title}}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{{product.title}}</h1>
+    <hr>
+    <div class="row">
+        <div class="col-md-6">
+            <img src="{{product.image.url}}" alt="{{product.title}}" class="img-fluid">
+            <div class="row">
+                {% for pi in product.productimage_set.all %}
+                <div class="col-md-4">
+                    <a href="{{pi.images.url}}" target="_blank"><img src="{{pi.images.url}}" alt="{{pi.product.title}}" class="img-fluid pd-image"></a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h4>{{product.title}} (Viewed {{product.view_count}} times)</h4>
+            <h5>category: {{product.category.title}}</h5>
+            <h5><strike>Rs.{{product.marked_price}}</strike>Rs. {{product.selling_price}}</h5>
+            <a href="{% url 'addToCart' product.id %}"  class="btn btn-info">Add to cart</a>
+            <hr>
+            <p class="text-info">Warranty: {{product.Warranty}}</p>
+            <p class="text-info">return_policy: {{product.return_policy}}</p>
+            <hr>
+            <p>{{product.description}}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}
+Order Detail
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <h2>Order Details</h2>
+            <p><span>Name: </span>{{order.ordered_by}}</p>
+            <p><span>Shipping Address: </span>{{order.shipping_address}}</p>
+            <p><span>Mobile: </span>{{order.mobile}}</p>
+            <p><span>Email: </span>{{order.email}}</p>
+            <p><span>Email: </span>{{order.email}}</p>
+            <hr>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>S.N.</th>
+                        <th>orderItem</th>
+                        <th>quantity</th>
+                        <th>Rate</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.cart.cartproduct_set.all %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td><a target="_blank" href="{% url 'productDetail' item.product.slug %}">{{item.product.title}}</a></td>
+                        <td>{{item.quantity}}</td>
+                        <td>{{item.rate}}</td>
+                        <td>{{item.subtotal}}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <th colspan="4">total</th>
+                        <th>{{order.cart.total}}</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

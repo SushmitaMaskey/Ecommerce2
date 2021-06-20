@@ -1,0 +1,43 @@
+{% extends 'AdminPages/adminBase.html' %}
+{% block title %}
+Admin product list
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <h2>
+            All Products
+        </h2>
+        <a href="{% url 'adminProductCreate' %}">Add a product</a>
+        <table class='table table-responsive'>
+            <thead>
+                <tr>
+                    <th>S.N.</th>
+                    <th>Title</th>
+                    <th>Image</th>
+                    <th>Marked Price</th>
+                    <th>Selling Price</th>
+                    <th>Warranty</th>
+                    <th>Return Policy</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td><a href="{% url 'adminProductUpdate' product.slug %}">{{product.title}}</a></td>
+                    <td><img src="{{product.image.url}}" alt="product.title" class="img-fluid prod-list"></td>
+                    <td>{{product.marked_price}}</td>
+                    <td>{{product.selling_price}}</td>
+                    <td>{{product.warranty}}</td>
+                    <td>{{product.return_policy}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'AdminPages/adminBase.html' %}
+{% block title %}
+Admin Order Detail
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <h2>Order Details</h2>
+            <p><span>Name: </span>{{order_obj.ordered_by}}</p>
+            <p><span>Shipping Address: </span>{{order_obj.shipping_address}}</p>
+            <p><span>Mobile: </span>{{order_obj.mobile}}</p>
+            <p><span>Email: </span>{{order_obj.email}}</p>
+            <p><span>Order Status: </span>{{order_obj.order_status}}</p>
+            <p><span>Payment: </span>{{order_obj.payment_completed}}{% if order_obj.payment_completed %}({{order_obj.payment_method}}){%endif%}</p>
+            <hr>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>S.N.</th>
+                        <th>orderItem</th>
+                        <th>quantity</th>
+                        <th>Rate</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order_obj.cart.cartproduct_set.all %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td><a target="_blank" href="{% url 'productDetail' item.product.slug %}">{{item.product.title}}</a></td>
+                        <td>{{item.quantity}}</td>
+                        <td>{{item.rate}}</td>
+                        <td>{{item.subtotal}}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <th colspan="4">total</th>
+                        <th>{{order_obj.cart.total}}</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <form action="{% url 'orderStatusChange' order_obj.id %}" method="POST">
+                                {% csrf_token %}
+                                <select name="status" id="">
+                                    {% for i,j in status %} <!--for key and value relation-->
+                                    <option value="{{i}}" {% if i == order_obj.order_status %}selected{% endif %} >{{j}}</option>
+                                    {% endfor %}
+                                </select>
+                                <button class="btn btn-info" >update change</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

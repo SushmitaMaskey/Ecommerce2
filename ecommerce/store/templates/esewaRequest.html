@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+        <style>
+            #myform{
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        
+        <body>
+            <h3>You will be redirected to esewa website shortly...</h3>
+            <form action="https://uat.esewa.com.np/epay/main" method="POST" id='myform'>
+            <input value="{{order.total}}" name="tAmt" type="hidden">
+            <input value="{{order.total}}" name="amt" type="hidden">
+            <input value="0" name="txAmt" type="hidden">
+            <input value="0" name="psc" type="hidden">
+            <input value="0" name="pdc" type="hidden">
+            <input value="EPAYTEST" name="scd" type="hidden">
+            <input value="{{order.id}}" name="pid" type="hidden">
+            <input value="http://127.0.0.1:8000/esewaVerify" type="hidden" name="su">
+            <input value="{{request.build_absolute_uri}}" type="hidden" name="fu">
+            <input value="Submit" type="submit">
+            </form>
+        </body>
+        <script>
+            setTimeout(function(){
+                document.getElementById('myform').submit()
+            },500)
+        </script>
+        <script src="" async defer></script>
+    </body>
+</html>

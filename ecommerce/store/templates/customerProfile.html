@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}
+Customer Profile
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Detail Information</h2>
+            <p><span>Name: </span>{{customer.full_name}}</p>
+            <p><span>Address: </span>{{customer.address}}</p>
+            <p><span>Email: </span>{{customer.user.email}}</p>
+            <p><span>Username: </span>{{customer.user.username}}</p>
+        </div>
+        <div class="col-md-8">
+            <h2>Previous Orders</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>S.N.</th>
+                        <th>Order ID</th>
+                        <th>Ordered on</th>
+                        <th>Total</th>
+                        <th>Discount</th>
+                        <th>Order Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td><a href="{% url 'orderDetail' order.id %}">#Order_ID_{{order.id}}</a></td>
+                        <td>{{order.created_at}}</td>
+                        <td>{{order.total}}</td>
+                        <td>{{order.discount}}</td>
+                        <td>{{order.order_status}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

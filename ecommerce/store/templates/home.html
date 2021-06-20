@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <h1>welcome to our site</h1>
+    <hr>
+    <div class="row mt-3">
+        {% for product in product_list %}
+        <div class="col-md-4">
+            <div class="m-4">
+                <h4><a href="{% url 'productDetail' product.slug %}">{{ product.title }}</a></h4>
+                <img src="{{ product.image.url }}" alt="" class="img-fluid" style='height: 200px; object-fit: content;'>
+                <p class="mt-3"><strike>Rs. {{ product.marked_price }}</strike> Rs. {{ product.selling_price }}</p>
+                <a href="{% url 'addToCart' product.id %}" class="btn btn-info">Add to cart</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <hr>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            {% if product_list.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{product_list.previous_page_number}}">Previous</a>
+            </li>
+            {% endif %}
+            <li class="page-item"><a class="page-link" href="#">{{product_list.number}}</a></li>
+            {% if product_list.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ product_list.next_page_number }}">next</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ product_list.paginator.num_pages">Last</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+{% endblock %}
