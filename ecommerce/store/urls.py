@@ -26,6 +26,9 @@ urlpatterns=[
     path('customerProfile/', CustomerProfileView.as_view(), name='customerProfile'),
     path('customerProfile/orderDetail-<int:pk>/',OrderDetailView.as_view(), name='orderDetail'),
     path('search/', SearchView.as_view(), name='search'),
+    path('passwordReset/', PasswordResetView.as_view(), name='passwordReset'),
+    path('password-change/<email>/<token>/', PasswordChangeView.as_view(), name='passwordChange'),
+
     #admin pages
     path('adminLogin/', AdminLoginView.as_view(), name='adminLogin'),
     path('adminHome/',AdminHomeView.as_view(), name='adminHome'),

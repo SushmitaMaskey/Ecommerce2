@@ -5,24 +5,33 @@ Customer Login
 
 {% block content %}
 <style>
-    .errorlist{
+    .errorlist {
         color: red;
     }
 </style>
 <div class="container">
     <div class="row">
         <div class="col-md-6 mx-auto">
+
             <h3>Customer Login Form</h3>
+            {% if request.GET.m == 's' %}
+            <h3>Your password has been reset successfully. Please login with the new credentials!</h3>
+            {% endif %}
+            
             <form action="" method='POST'>
                 {% csrf_token %}
                 {{form.as_p}}
-                <button class="btn btn-info" >Login</button>
+                <button class="btn btn-info">Login</button>
                 {% if error %}
                 <li style='color: red;'>{{error}}</li>
                 {% endif %}
-                <p>Don't have an account? <a href="{% url 'customerRegistration' %}{% if request.GET.next %}?next={{request.GET.next}}{% endif %}">Register here</a></p>
             </form>
-            
+            <p>Forgot Password? <a href="{% url 'passwordReset' %}">Recover here</a></p>
+            <p>Don't have an account? <a
+                    href="{% url 'customerRegistration' %}{% if request.GET.next %}?next={{request.GET.next}}{% endif %}">Register
+                    here</a></p>
+
+
         </div>
     </div>
 </div>

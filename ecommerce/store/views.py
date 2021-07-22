@@ -1,4 +1,5 @@
-from .forms import CheckoutForm, CustomerRegistrationForm, CustomerLoginForm, AdminProductCreateForm
+from ecommerce import settings
+from .forms import CheckoutForm, CustomerRegistrationForm, CustomerLoginForm, AdminProductCreateForm, PasswordResetForm, PasswordChangeForm
 from django.contrib.auth import authenticate, login, logout
 from .models import *
 from django.shortcuts import render, redirect
@@ -7,6 +8,8 @@ from django.urls import reverse_lazy, reverse
 from django.db.models import Q  # helps to form 'or' relation in search
 from django.core.paginator import Paginator
 import requests as req
+from .utils import password_reset_token
+from django.core.mail import send_mail
 
 
 class EcomMixin(object):  #to assign customer to the cart. this is inherited by other classes
@@ -291,6 +294,59 @@ class CustomerLoginView(FormView):
         else:
             return self.success_url
         # return super().get_success_url()
+
+class PasswordResetView(FormView):
+    template_name='passwordReset.html'
+    form_class= PasswordResetForm
+    success_url='/passwordReset/?m=s'
+
+    def form_valid(self, form):
+        #getting email from the form
+        email= form.cleaned_data.get('email')
+       
+        #getting the current ip/domain
+        url= self.request.META['HTTP_HOST']
+       
+        #get the current customer and then user
+        customer= Customer.objects.get(user__email=email)
+        user= customer.user
+       
+        #sending the mail to the user
+        text_content= 'Please click the link below to reset your password: '
+        html_content=  url+'/password-change/'+email+'/'+password_reset_token.make_token(user)+'/'
+        send_mail(
+            'Password Reset Link| Django Ecommerce',
+            text_content + html_content,
+            settings.EMAIL_HOST_USER,
+            [email],
+            fail_silently= [False],
+            )
+        return super().form_valid(form)
+
+class PasswordChangeView(FormView):
+    template_name='passwordChange.html'
+    form_class=PasswordChangeForm
+    success_url='/customerLogin/?m=s'
+
+    def dispatch(self, request, *args, **kwargs):
+        email= self.kwargs.get('email')
+        user=User.objects.get(email=email)
+        token= self.kwargs.get('token')
+        if user is not None and password_reset_token.check_token(user,token):
+            pass
+        else:
+            return redirect(reverse('passwordReset')+ '?m=e')
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        password= form.cleaned_data['new_password']
+        email= self.kwargs.get('email')
+        user= User.objects.get(email=email)
+        user.set_password(password) # set_password is a method
+        user.save() 
+        return super().form_valid(form)
+
 
 class CustomerProfileView(TemplateView):
     template_name='customerProfile.html'
