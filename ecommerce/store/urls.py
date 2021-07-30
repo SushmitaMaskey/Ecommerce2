@@ -1,6 +1,7 @@
 from django.urls import path
 from django.urls.resolvers import URLPattern
 from .views import *
+from . import views
 
 # app_name='store'
 
@@ -37,7 +38,9 @@ urlpatterns=[
     path('adminOrderStatus-<int:pk>-change/',AdminOrderStatusChangeView.as_view(), name='orderStatusChange'),
     path('adminProductList/', AdminProductListView.as_view(), name='adminProductList'),
     path('adminProductCreate/', AdminProductCreateView.as_view(), name='adminProductCreate'),
-    path('adminProductUpdate/<slug>/', AdminProductUpdateView.as_view(),name='adminProductUpdate')
+    path('adminProductUpdate/<slug>/', AdminProductUpdateView.as_view(),name='adminProductUpdate'),
+
+    path('loadMore',views.LoadMore, name='load-more'),
 
 
 

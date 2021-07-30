@@ -8,9 +8,9 @@ Home
 
     <h1>welcome to our site</h1>
     <hr>
-    <div class="row mt-3">
+    <div class="row mt-3 product-wrapper">
         {% for product in product_list %}
-        <div class="col-md-4">
+        <div class="col-md-4 product-box">
             <div class="m-4">
                 <h4><a href="{% url 'productDetail' product.slug %}">{{ product.title }}</a></h4>
                 <img src="{{ product.image.url }}" alt="" class="img-fluid" style='height: 200px; object-fit: content;'>
@@ -20,8 +20,8 @@ Home
         </div>
         {% endfor %}
     </div>
-    <hr>
-    <nav aria-label="Page navigation example">
+
+    <!-- <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             {% if product_list.has_previous %}
             <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
@@ -34,7 +34,62 @@ Home
             <li class="page-item"><a class="page-link" href="?page={{ product_list.paginator.num_pages">Last</a></li>
             {% endif %}
         </ul>
-    </nav>
-</div>
+    </nav> -->
 
+</div>
+<hr>
+<p class="text-center">
+    <button class='btn btn-primary' id='loadmoreBtn'>Load more</button>
+</p>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        $('#loadmoreBtn').on('click', function () {
+            var _currentResult = $('.product-box').length; //getting no. current products loaded on the page 
+            $.ajax({
+                url: "{% url 'load-more' %}",
+                type: 'post',
+                data: {
+                    'offset': _currentResult,
+                    'csrfmiddlewaretoken': '{{csrf_token}}',
+
+                },
+                dataType: 'json',
+                beforeSend: function () {
+                    $('#loadmoreBtn').addClass('disabled').text('loading...');
+                },
+                success: function (res) {
+                    var _html = '';
+                    var json_data = $.parseJSON(res.products);
+                    console.log(json_data);
+                    $.each(json_data, function (index, data) {
+                        _html += '<div class="col-md-4 product-box">\
+            <div class="m-4">\
+                <h4><a href="productDetail/'+ data.fields.slug + '">' + data.fields.title + '</a></h4>\
+                <img src="media/'+ data.fields.image + '" alt="" class="img-fluid" style="height: 200px; object-fit: content;">\
+                <p class="mt-3"><strike>Rs. '+ data.fields.marked_price + '</strike> Rs.' + data.fields.selling_price + ' </p>\
+                <a href= "addtocart'+ data.fields.id + '" class="btn btn-info">Add to cart</a>\
+            </div>\
+        </div> ';
+
+                    });
+                    $('.product-wrapper').append(_html);
+                    var _counttotal = $('.product-box').length
+                    if (_counttotal == res.totalResult) {
+                        $('#loadmoreBtn').remove();
+                    } else {
+                        $('#loadmoreBtn').removeClass('disabled').text('Load More');
+
+                    }
+                    console.log(res);
+                }
+
+
+            });
+
+        });
+    });
+</script>
 {% endblock %}

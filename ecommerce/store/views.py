@@ -10,6 +10,8 @@ from django.core.paginator import Paginator
 import requests as req
 from .utils import password_reset_token
 from django.core.mail import send_mail
+from django.core import serializers
+from django.http import JsonResponse
 
 
 class EcomMixin(object):  #to assign customer to the cart. this is inherited by other classes
@@ -476,3 +478,16 @@ class SearchView(TemplateView):
         product_list= Product.objects.filter(Q(title__icontains= keyword) | Q(description__icontains=keyword) )
         context['product_list']= product_list
         return context
+
+def LoadMore(request):
+    offset= int(request.POST['offset'])
+    limit= 3
+    products= Product.objects.all()[offset:offset+limit]
+    totalData= Product.objects.count()
+    data={}
+    productsJson= serializers.serialize('json', products)
+    return JsonResponse(data={
+        'products': productsJson,
+        'totalResult': totalData,
+    })
+    
